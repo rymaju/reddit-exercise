@@ -11,15 +11,10 @@ import {
   Divider,
   ListItemAvatar,
   CircularProgress,
-  Box,
-  Card,
-  CardContent,
   createMuiTheme,
   CssBaseline,
   ThemeProvider,
   useMediaQuery,
-  IconButton ,
-  CardMedia,
   Hidden,
 } from "@material-ui/core";
 import { useState } from "react";
@@ -27,7 +22,7 @@ import { useEffect } from "react";
 import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useHistory, useLocation } from "react-router-dom";
-import RedditIcon from '@material-ui/icons/Reddit';
+import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 // If developing frontend only...
 // Set URI to http://localhost:5000 to interface with local backend
 const URI = "https://reddit-stack.herokuapp.com";
@@ -89,12 +84,23 @@ const TimeRangeSelect = styled(Select)`
   }
 `;
 
+const ErrorContainer = styled.div`
+  display: flex;
+  min-height: 120px;
+  align-items: center;
+`
+const ErrorIcon = styled(ErrorOutlineIcon)`
+  color: ${deepOrange[500]};
+  font-size: 40px;
+  margin: 10px;
+`
 const LoadingIndicatorListItem = styled(ListItem)`
   display: flex;
   justify-content: center;
   width: 100%;
   height: 120px;
 `;
+
 
 
 function LoadingIndicator() {
@@ -138,6 +144,11 @@ function App() {
     setTimerange(event.target.value);
   };
   useEffect(getPosts, [timerange]);
+
+  const onSubmit = (e) => {
+    e.preventDefault()
+    getPosts()
+  }
 
 
   function getPosts() {
@@ -216,6 +227,7 @@ function App() {
       <div className="App">
         <Header>
           <Container maxWidth="md">
+            <form onSubmit={onSubmit}>
             <WhiteText variant="h2">
               The top{" "}
               {posts.state === "Loaded" ? posts.data.length : fetchBatchSize}{" "}
@@ -229,7 +241,7 @@ function App() {
                 id="post-limit"
                 value={subreddit}
                 onChange={handleSubredditChange}
-                onBlur={()=>getPosts()}
+                //onBlur={getPosts}
               />
             </WhiteText>
             <WhiteText variant="h2">
@@ -246,9 +258,8 @@ function App() {
                 <option value={"all"}>all time</option>
               </TimeRangeSelect>
             </WhiteText>
-            {/* <Button onClick={getPosts}>
-            Search!
-          </Button> */}
+            <input type="submit" id="submitbtn" style={{display: 'none'}}  />
+            </form>
           </Container>
         </Header>
 
@@ -275,7 +286,9 @@ function App() {
               </List>
             </InfiniteScroll>
           ) : posts.state === "Error" ? (
-            <p>{posts.msg}</p>
+            <ErrorContainer>
+            <ErrorIcon fontSize="large"/> <Typography variant="body1">{posts.msg}</Typography>
+            </ErrorContainer>
           ) : (
             <LoadingIndicator />
           )}
