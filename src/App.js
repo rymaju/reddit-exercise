@@ -24,8 +24,8 @@ import { useHistory, useLocation } from "react-router-dom";
 
 
 // Set URI to http://localhost:5000 to interface with local backend
-//const URI = 'https://reddit-stack.herokuapp.com'
-const URI = "http://localhost:5000";
+const URI = 'https://reddit-stack.herokuapp.com'
+//const URI = "http://localhost:5000";
 
 const fetchBatchSize = 25;
 
