@@ -37,7 +37,8 @@ router.route('/:subreddit').get(async (req, res) => {
   const limit = req.query.limit || 20
   const timerange = req.query.timerange || 'all'
   const after = req.query.after || null
-
+  
+  res.set('Content-Security-Policy', '')
   try {
     const rawData = await fetchTopPosts(subreddit, limit, timerange, after)
 

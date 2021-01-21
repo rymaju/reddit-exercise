@@ -21,7 +21,7 @@ function init () {
   app.use(express.json()) // Built in body-parser for reading request JSON bodies
   app.use('/api/', apiLimiter) // use the apiLimiter only on routes beginning with /api
   app.use('/api/posts', postsRouter)
-
+  
   return app
 }
 
