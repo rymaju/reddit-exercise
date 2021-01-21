@@ -18,15 +18,16 @@ import {
   CssBaseline,
   ThemeProvider,
   useMediaQuery,
-  Modal,
+  IconButton ,
   CardMedia,
+  Hidden,
 } from "@material-ui/core";
 import { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useHistory, useLocation } from "react-router-dom";
-
+import RedditIcon from '@material-ui/icons/Reddit';
 // If developing frontend only...
 // Set URI to http://localhost:5000 to interface with local backend
 const URI = "https://reddit-stack.herokuapp.com";
@@ -97,29 +98,6 @@ const LoadingIndicatorListItem = styled(ListItem)`
   height: 120px;
 `;
 
-const ModalPostCard = styled(Card)`
-  position: absolute;
-
-  top: 5vh;
-  left: calc(50vw - min(90vw, 90vh) / 2);
-  height: 90vh;
-  width: min(90vw, 90vh);
-  overflow-y: scroll;
-`;
-const ModalCardContent = styled(CardContent)`
-  width: auto;
-`;
-
-const ModalCardMediaContent = styled.div``;
-
-const ModalImage = styled.img`
-  width: min(90vh, 100%);
-  height: max-content;
-  display: block;
-  margin: auto;
-  padding: 16px;
-  border-radius: 20px;
-`;
 
 function LoadingIndicator() {
   return (
@@ -153,12 +131,6 @@ function App() {
     state: "isLoading",
     data: undefined,
   });
-
-  const [showModal, setShowModal] = useState(false);
-  const [selectedPostIndex, setSelectedPostIndex] = useState(-1);
-  function closeModal() {
-    setShowModal(false);
-  }
 
   const handleSubredditChange = (event) => {
     setSubreddit(event.target.value);
@@ -304,9 +276,6 @@ function App() {
                     thumbnail={post.thumbnail}
                     href={"https://reddit.com" + post.permalink}
                     target="blank"
-                    index = {i}
-                    setSelectedPostIndex={setSelectedPostIndex}
-                    setShowModal={setShowModal}
                   />
                 ))}
               </List>
@@ -317,46 +286,25 @@ function App() {
             <LoadingIndicator />
           )}
         </Container>
-
-        <Modal
-          open={showModal}
-          onClose={closeModal}
-          aria-labelledby="simple-modal-title"
-          aria-describedby="simple-modal-description"
-        >
-          <ModalPostCard>
-            {posts.state === "Loaded" &&
-            selectedPostIndex < posts.data.length &&
-            selectedPostIndex >= 0 ? (
-              <>
-                <ModalCardContent>
-                  <Typography variant="overline">
-                  {formatScore(posts.data[selectedPostIndex].score)}
-                  </Typography>
-                  <Typography variant="h6">{posts.data[selectedPostIndex].title}</Typography>
-                  <Typography variant="subtitle1">
-                    Posted by u/reddituser
-                  </Typography>
-                </ModalCardContent>
-                <ModalCardMediaContent>
-                  <ModalImage src={posts.data[selectedPostIndex].thumbnail} />
-                </ModalCardMediaContent>
-              </>
-            ) : (
-              <CircularProgress />
-            )}
-          </ModalPostCard>
-        </Modal>
       </div>
     </ThemeProvider>
   );
 }
 
+
+const TextPlaceholder = styled.div`
+  height: 100px;
+  width: 100px;
+  margin-left: 1em;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+`
+
 const ListImageRight = styled.img`
   height: 100px;
   width: 100px;
   object-fit: cover;
-  float: right;
   display: block;
   margin-left: 1em;
 `;
@@ -381,24 +329,36 @@ function PostListItem({ href, title, author, score, thumbnail, }) {
 
   return (
     <>
-      <PostListItemBody button component="a" href={href} target="blank">
+      <PostListItemBody button component="a" href={href} target="_blank">
+        
+
+        <Hidden xsDown>
         <ListItemAvatar>
           <Typography variant="overline">{formatScore(score)}</Typography>
+          
         </ListItemAvatar>
+        </Hidden>
 
+      
         <ListItemText primary={title} secondary={`Posted by u/${author}`} />
-
         {thumbnail &&
           thumbnail !== "self" &&
           (thumbnail === "nsfw" ? (
-            <Box paddingY={4}>
+            <TextPlaceholder>
               <Typography color="primary" variant="overline">
                 NSFW
               </Typography>
-            </Box>
-          ) : (
-            <ListImageRight src={thumbnail} />
-          ))}
+            </TextPlaceholder>
+          ) : 
+          (thumbnail === "spoiler" ? (
+              <TextPlaceholder>
+                <Typography color="primary" variant="overline">
+                  SPOILER
+                </Typography>
+              </TextPlaceholder>
+            ) : thumbnail.startsWith('http') && (
+           <ListImageRight src={thumbnail} />
+          )))}
       </PostListItemBody>
       <Divider variant="inset" component="li" />
     </>
