@@ -215,6 +215,7 @@ function App() {
             <WhiteText variant="h2">
               r/
               <SubredditField
+                type="search"
                 id="post-limit"
                 value={subreddit}
                 onChange={handleSubredditChange}
