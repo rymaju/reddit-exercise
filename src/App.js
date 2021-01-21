@@ -80,8 +80,8 @@ const TimeRangeSelect = styled(Select)`
       font-family: inherit;
       color: black; // color of all the other options
       font-weight: 400;
-      //font-size: 1rem;
-      min-height: 1rem;
+      font-size: 1rem;
+      //min-height: 1rem;
     }
   }
 `;
