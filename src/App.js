@@ -81,7 +81,7 @@ const TimeRangeSelect = styled(Select)`
       color: black; // color of all the other options
       font-weight: 400;
       //font-size: 1rem;
-      min-height: 3.75rem;
+      min-height: 1rem;
     }
   }
 `;
