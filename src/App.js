@@ -64,32 +64,40 @@ const SubredditField = styled(BigTextField)`
   }
 `;
 const TimeRangeSelect = styled(Select)`
-  //min-height: 3.75rem;
+  min-height: 3.75rem;
+  :before {
+    min-height: 3.75rem;
+  }
   select {
+    font-family: inherit;
     padding-left: 0.5ch;
     padding-right: 0.5ch;
     font-size: 3.75rem;
+    line-height: 3.75rem;
     color: white; // color of the selected option
     font-weight: 800;
     option {
+      font-family: inherit;
       color: black; // color of all the other options
       font-weight: 400;
-      font-size: 1rem;
+      //font-size: 1rem;
+      min-height: 3.75rem;
     }
   }
 `;
 
+const LoadingIndicatorListItem= styled(ListItem)`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 120px;
+`
+
 function LoadingIndicator() {
   return (
-    <ListItem>
-      <Box
-        display="flex"
-        justifyContent="center"
-        width="100%"
-      >
+    <LoadingIndicatorListItem>
         <CircularProgress />
-      </Box>
-    </ListItem>
+    </LoadingIndicatorListItem>
   );
 }
 
@@ -238,7 +246,7 @@ function App() {
                 <option value={"year"}>this year</option>
                 <option value={"all"}>all time</option>
               </TimeRangeSelect>
-              .
+              
             </WhiteText>
             {/* <Button onClick={getPosts}>
             Search!
