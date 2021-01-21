@@ -1,5 +1,5 @@
 import styled from "styled-components";
-
+import { deepOrange, orange } from "@material-ui/core/colors";
 import {
   Container,
   Typography,
@@ -13,15 +13,19 @@ import {
   ListItemAvatar,
   CircularProgress,
   Box,
+  createMuiTheme, CssBaseline, ThemeProvider, useMediaQuery 
 } from "@material-ui/core";
-import { useState } from "react";
+import { useState, useMemo  } from "react";
 import { useEffect } from "react";
 import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { useHistory, useLocation } from "react-router-dom"
+import { useHistory, useLocation } from "react-router-dom";
+
+
 
 // Set URI to http://localhost:5000 to interface with local backend
-const URI = 'https://reddit-stack.herokuapp.com'
+//const URI = 'https://reddit-stack.herokuapp.com'
+const URI = "http://localhost:5000";
 
 const fetchBatchSize = 25;
 
@@ -51,11 +55,6 @@ const BigTextField = styled(TextField)`
   padding-right: 0.5ch;
 `;
 
-const NumberOfPostsField = styled(BigTextField)`
-  div input {
-    width: 3ch;
-  }
-`;
 
 const SubredditField = styled(BigTextField)`
   div input {
@@ -63,6 +62,7 @@ const SubredditField = styled(BigTextField)`
   }
 `;
 const TimeRangeSelect = styled(Select)`
+  //min-height: 3.75rem;
   select {
     padding-left: 0.5ch;
     padding-right: 0.5ch;
@@ -84,7 +84,7 @@ function LoadingIndicator() {
         display="flex"
         justifyContent="center"
         width="100%"
-        color="orangered"
+        //color={deepOrange[500]}
       >
         <CircularProgress />
       </Box>
@@ -93,17 +93,26 @@ function LoadingIndicator() {
 }
 
 function App() {
-  const history = useHistory()
+  const history = useHistory();
   const { search } = useLocation();
 
   const query = new URLSearchParams(search);
 
-  const [subreddit, setSubreddit] = useState(query.get('r') || "news");
+  const [subreddit, setSubreddit] = useState(query.get("r") || "news");
   const [limit, setLimit] = useState(25);
-  const [timerange, setTimerange] = useState(query.get('t') || "all");
+  const [timerange, setTimerange] = useState(query.get("t") || "all");
   const [hasMore, setHasMore] = useState(false);
   const [afterAnchor, setAfterAnchor] = useState(null);
-  
+
+  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
+  const theme = 
+      createMuiTheme({
+        palette: {
+          type: prefersDarkMode ? "dark" : "light",
+          primary: deepOrange,
+          secondary: orange,
+        },
+      })
 
   const [posts, setPosts] = useState({
     state: "isLoading",
@@ -138,10 +147,7 @@ function App() {
       return;
     }
 
-    history.push({search: `?r=${subreddit}&t=${timerange}`})
-
-
-
+    history.push({ search: `?r=${subreddit}&t=${timerange}` });
 
     setPosts({
       state: "isLoading",
@@ -205,76 +211,96 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
-      <Header>
-        <Container maxWidth="md">
-          <WhiteText variant="h2">
-            The top{" "}
-            {posts.state == "Loaded" ? posts.data.length : fetchBatchSize} posts
-            from
-          </WhiteText>
-          <WhiteText variant="h2">
-            r/
-            <SubredditField
-              id="post-limit"
-              value={subreddit}
-              onChange={handleSubredditChange}
-              onKeyPress={onKeyPress}
-            />
-          </WhiteText>
-          <WhiteText variant="h2">
-            of
-            <TimeRangeSelect
-              native
-              value={timerange}
-              onChange={handleTimeChange}
-            >
-              <option value={"now"}>today</option>
-              <option value={"week"}>this week</option>
-              <option value={"month"}>this month</option>
-              <option value={"year"}>this year</option>
-              <option value={"all"}>all time</option>
-            </TimeRangeSelect>
-            .
-          </WhiteText>
-          {/* <Button onClick={getPosts}>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <div className="App">
+        <Header>
+          <Container maxWidth="md">
+            <WhiteText variant="h2">
+              The top{" "}
+              {posts.state == "Loaded" ? posts.data.length : fetchBatchSize}{" "}
+              posts from
+            </WhiteText>
+            <WhiteText variant="h2">
+              r/
+              <SubredditField
+                id="post-limit"
+                value={subreddit}
+                onChange={handleSubredditChange}
+                onKeyPress={onKeyPress}
+              />
+            </WhiteText>
+            <WhiteText variant="h2">
+              of
+              <TimeRangeSelect
+                native
+                value={timerange}
+                onChange={handleTimeChange}
+              >
+                <option value={"now"}>today</option>
+                <option value={"week"}>this week</option>
+                <option value={"month"}>this month</option>
+                <option value={"year"}>this year</option>
+                <option value={"all"}>all time</option>
+              </TimeRangeSelect>
+              .
+            </WhiteText>
+            {/* <Button onClick={getPosts}>
             Search!
           </Button> */}
-        </Container>
-      </Header>
+          </Container>
+        </Header>
 
-      <Container maxWidth="md">
-        {posts.state === "Loaded" ? (
-          <InfiniteScroll
-            dataLength={posts.data.length}
-            next={fetchMoreData}
-            hasMore={hasMore}
-            loader={<LoadingIndicator />}
-          >
-            <List>
-              {posts.data.map((post, i) => (
-                <PostListItem
-                  key={i}
-                  title={post.title}
-                  author={post.author}
-                  score={post.score}
-                  href={"https://reddit.com" + post.permalink}
-                  target="blank"
-                />
-              ))}
-            </List>
-          </InfiniteScroll>
-        ) : posts.state === "Error" ? (
-          <p>{posts.msg}</p>
-        ) : (
-          <LoadingIndicator />
-        )}
-      </Container>
-    </div>
+        <Container maxWidth="md">
+          {posts.state === "Loaded" ? (
+            <InfiniteScroll
+              dataLength={posts.data.length}
+              next={fetchMoreData}
+              hasMore={hasMore}
+              loader={<LoadingIndicator />}
+            >
+              <List>
+                {posts.data.map((post, i) => (
+                  <PostListItem
+                    key={i}
+                    title={post.title}
+                    author={post.author}
+                    score={post.score}
+                    thumbnail={post.thumbnail}
+                    href={"https://reddit.com" + post.permalink}
+                    target="blank"
+                  />
+                ))}
+              </List>
+            </InfiniteScroll>
+          ) : posts.state === "Error" ? (
+            <p>{posts.msg}</p>
+          ) : (
+            <LoadingIndicator />
+          )}
+        </Container>
+      </div>
+    </ThemeProvider>
   );
 }
 
-function PostListItem({ href, title, author, score }) {
+const ListImageRight = styled.img`
+  height: 100px;
+  width: 100px;
+  object-fit: cover;
+  float: right;
+  display: block;
+  padding-left: 1em;
+`;
+
+const PostListItemBody = styled(ListItem)`
+  min-height: 100px;
+  :visited {
+    color: ${deepOrange[500]};
+  }
+`;
+
+function PostListItem({ href, title, author, score, thumbnail }) {
   function formatScore(redditScore) {
     if (redditScore >= 1000000) {
       return `${(redditScore / 1000000).toFixed(0)}M`;
@@ -287,13 +313,24 @@ function PostListItem({ href, title, author, score }) {
 
   return (
     <>
-      <ListItem button component="a" href={href} target="blank">
+      <PostListItemBody button component="a" href={href} target="blank">
         <ListItemAvatar>
           <Typography variant="overline">{formatScore(score)}</Typography>
         </ListItemAvatar>
 
         <ListItemText primary={title} secondary={`Posted by u/${author}`} />
-      </ListItem>
+
+        {thumbnail &&
+          (thumbnail === "nsfw" ? (
+            <ListImageRight
+              src={
+                "https://i3.kym-cdn.com/photos/images/original/000/905/295/193.png"
+              }
+            />
+          ) : (
+            <ListImageRight src={thumbnail} />
+          ))}
+      </PostListItemBody>
       <Divider variant="inset" component="li" />
     </>
   );

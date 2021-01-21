@@ -17,13 +17,19 @@ async function fetchTopPosts(subreddit, amount, timerange, after) {
 
 function sanitizePostData(post) {
     const postData = post.data
-    return {
+    let res = {
         title: postData.title,
         score: postData.score,
         created: postData.created,
         author: postData.author,
         permalink: postData.permalink
     }
+
+    if (postData.thumbnail.length > 0) {
+        res.thumbnail = postData.thumbnail
+    }
+
+    return res
 }
 
 router.route('/:subreddit').get(async (req, res) => {
