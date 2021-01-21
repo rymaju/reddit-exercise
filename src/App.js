@@ -20,6 +20,8 @@ import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useHistory, useLocation } from "react-router-dom"
 
+// Set URI to http://localhost:5000 to interface with local backend
+const URI = 'https://reddit-stack.herokuapp.com'
 
 const fetchBatchSize = 25;
 
@@ -148,7 +150,7 @@ function App() {
 
     axios
       .get(
-        `http://localhost:5000/api/posts/${subreddit}?timerange=${timerange}&limit=${fetchBatchSize}`
+        `${URI}/api/posts/${subreddit}?timerange=${timerange}&limit=${fetchBatchSize}`
       )
       .then((response) => {
         console.log(response);
@@ -175,7 +177,7 @@ function App() {
     console.log("fetching more data...");
     axios
       .get(
-        `http://localhost:5000/api/posts/${subreddit}?timerange=${timerange}&after=${afterAnchor}&limit=${fetchBatchSize}`
+        `${URI}/api/posts/${subreddit}?timerange=${timerange}&after=${afterAnchor}&limit=${fetchBatchSize}`
       )
       .then((response) => {
         console.log(response);
