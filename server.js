@@ -12,7 +12,6 @@ if (process.env.HEROKU === 'true') {
 app.use(express.static(path.join(__dirname, 'build')));
 
 app.get('/*', function (req, res) {
-  res.set('Content-Security-Policy', '')
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
