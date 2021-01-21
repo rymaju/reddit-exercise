@@ -232,6 +232,7 @@ function App() {
               r/
               <SubredditField
                 type="search"
+                autoComplete='false'
                 id="post-limit"
                 value={subreddit}
                 onChange={handleSubredditChange}
