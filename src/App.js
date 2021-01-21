@@ -75,7 +75,6 @@ const TimeRangeSelect = styled(Select)`
     min-height: 3.75rem;
   }
   select {
-    font-family: inherit;
     padding-left: 0.5ch;
     padding-right: 0.5ch;
     font-size: 3.75rem;
@@ -83,8 +82,7 @@ const TimeRangeSelect = styled(Select)`
     color: white; // color of the selected option
     font-weight: 800;
     option {
-      font-family: inherit;
-      color: black; // color of all the other options
+      color: initial; // color of all the other options
       font-weight: 400;
       font-size: 1rem;
     }
@@ -141,11 +139,6 @@ function App() {
   };
   useEffect(getPosts, [timerange]);
 
-  const onKeyPress = (ev) => {
-    if (ev.key === "Enter") {
-      getPosts();
-    }
-  };
 
   function getPosts() {
     if (!subreddit.match(/^([A-Za-z]|[0-9]|-|_)+$/)) {
@@ -236,7 +229,7 @@ function App() {
                 id="post-limit"
                 value={subreddit}
                 onChange={handleSubredditChange}
-                onKeyPress={onKeyPress}
+                onBlur={()=>getPosts()}
               />
             </WhiteText>
             <WhiteText variant="h2">
