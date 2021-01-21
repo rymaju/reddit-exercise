@@ -19,18 +19,11 @@ function init () {
   app.use(cors()) // Here we enable cors
   
   // helmet is a medley of security middleware to better protect our app
-
-  // we want to fetch images from anywhere, so remove CSP restrictions on img src loading
-  let defaultCSP = helmet.contentSecurityPolicy.getDefaultDirectives()
-  delete defaultCSP["img-src"]
   app.use(
-    helmet.contentSecurityPolicy({
-    directives: {
-      ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-    },
+    helmet({
+      contentSecurityPolicy: false,
     })
   )
- // Content Security Policy: The page’s settings blocked the loading of a resource at https:///photos/images/original/000/905/295/193.png (“img-src”). react-dom.production.min.js:23:461
 
   app.use(express.json()) // Built in body-parser for reading request JSON bodies
   app.use('/api/', apiLimiter) // use the apiLimiter only on routes beginning with /api
