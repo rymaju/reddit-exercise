@@ -3,10 +3,20 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { StylesProvider } from '@material-ui/core/styles';
+import {
+  QueryClient,
+  QueryClientProvider,
+} from 'react-query'
 
+import { BrowserRouter as Router,  } from 'react-router-dom';
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <StylesProvider injectFirst>
+    <Router>
+      <App />
+      </Router>
+    </StylesProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
