@@ -293,7 +293,7 @@ const ListImageRight = styled.img`
   object-fit: cover;
   float: right;
   display: block;
-  padding-left: 1em;
+  margin-left: 1em;
 `;
 
 const PostListItemBody = styled(ListItem)`
