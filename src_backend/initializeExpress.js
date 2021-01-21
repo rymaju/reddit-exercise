@@ -21,20 +21,7 @@ function init () {
   // helmet is a medley of security middleware to better protect our app
   app.use(
     helmet.contentSecurityPolicy({
-      directives: {
-        defaultSrc: ["'self'"],
-        connectSrc: ["'self'"],
-        frameSrc: ["'self'"],
-        childSrc: ["'self'"],
-        scriptSrc: ["'self'"],
-        styleSrc: [
-          "'self'",
-          'https://fonts.googleapis.com'
-        ],
-        fontSrc: ["'self'", 'https://fonts.gstatic.com'],
-        imgSrc: ["'self'", 'https://b.thumbs.redditmedia.com'],
-        baseUri: ["'self'"],
-      },
+      
     })
   )
   app.use(express.json()) // Built in body-parser for reading request JSON bodies

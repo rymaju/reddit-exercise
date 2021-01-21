@@ -21,10 +21,13 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { useHistory, useLocation } from "react-router-dom";
 
 
-
+// If developing frontend only...
 // Set URI to http://localhost:5000 to interface with local backend
-const URI = 'https://reddit-stack.herokuapp.com'
+//const URI = 'https://reddit-stack.herokuapp.com'
 //const URI = "http://localhost:5000";
+
+// If running with server, set URI "", which makes links relative
+const URI = "";
 
 const fetchBatchSize = 25;
 
