@@ -312,7 +312,7 @@ function PostListItem({ href, title, author, score, thumbnail }) {
 
         <ListItemText primary={title} secondary={`Posted by u/${author}`} />
 
-        {thumbnail &&
+        {thumbnail && thumbnail !== 'self' &&
           (thumbnail === "nsfw" ? (
             <ListImageRight
               src={
