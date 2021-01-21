@@ -22,7 +22,9 @@ function sanitizePostData(post) {
         score: postData.score,
         created: postData.created,
         author: postData.author,
-        permalink: postData.permalink
+        permalink: postData.permalink,
+        url: postData.url,
+        postHint: postData.post_hint
     }
 
     if (postData.thumbnail.length > 0) {

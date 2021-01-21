@@ -12,22 +12,28 @@ import {
   ListItemAvatar,
   CircularProgress,
   Box,
-  createMuiTheme, CssBaseline, ThemeProvider, useMediaQuery 
+  Card,
+  CardContent,
+  createMuiTheme,
+  CssBaseline,
+  ThemeProvider,
+  useMediaQuery,
+  Modal,
+  CardMedia,
 } from "@material-ui/core";
-import { useState  } from "react";
+import { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useHistory, useLocation } from "react-router-dom";
 
-
 // If developing frontend only...
 // Set URI to http://localhost:5000 to interface with local backend
-//const URI = 'https://reddit-stack.herokuapp.com'
+const URI = "https://reddit-stack.herokuapp.com";
 //const URI = "http://localhost:5000";
 
 // If running with server, set URI "", which makes links relative
-const URI = "";
+//const URI = "";
 
 const fetchBatchSize = 25;
 
@@ -57,7 +63,6 @@ const BigTextField = styled(TextField)`
   padding-right: 0.5ch;
 `;
 
-
 const SubredditField = styled(BigTextField)`
   div input {
     width: min(17ch, 70vw);
@@ -81,22 +86,45 @@ const TimeRangeSelect = styled(Select)`
       color: black; // color of all the other options
       font-weight: 400;
       font-size: 1rem;
-      //min-height: 1rem;
     }
   }
 `;
 
-const LoadingIndicatorListItem= styled(ListItem)`
+const LoadingIndicatorListItem = styled(ListItem)`
   display: flex;
   justify-content: center;
   width: 100%;
   height: 120px;
-`
+`;
+
+const ModalPostCard = styled(Card)`
+  position: absolute;
+
+  top: 5vh;
+  left: calc(50vw - min(90vw, 90vh) / 2);
+  height: 90vh;
+  width: min(90vw, 90vh);
+  overflow-y: scroll;
+`;
+const ModalCardContent = styled(CardContent)`
+  width: auto;
+`;
+
+const ModalCardMediaContent = styled.div``;
+
+const ModalImage = styled.img`
+  width: min(90vh, 100%);
+  height: max-content;
+  display: block;
+  margin: auto;
+  padding: 16px;
+  border-radius: 20px;
+`;
 
 function LoadingIndicator() {
   return (
     <LoadingIndicatorListItem>
-        <CircularProgress />
+      <CircularProgress />
     </LoadingIndicatorListItem>
   );
 }
@@ -113,24 +141,29 @@ function App() {
   const [afterAnchor, setAfterAnchor] = useState(null);
 
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
-  const theme = 
-      createMuiTheme({
-        palette: {
-          type: prefersDarkMode ? "dark" : "light",
-          primary: deepOrange,
-          secondary: orange,
-        },
-      })
+  const theme = createMuiTheme({
+    palette: {
+      type: prefersDarkMode ? "dark" : "light",
+      primary: deepOrange,
+      secondary: orange,
+    },
+  });
 
   const [posts, setPosts] = useState({
     state: "isLoading",
     data: undefined,
   });
 
+  const [showModal, setShowModal] = useState(false);
+  const [selectedPostIndex, setSelectedPostIndex] = useState(-1);
+  function closeModal() {
+    setShowModal(false);
+  }
+
   const handleSubredditChange = (event) => {
     setSubreddit(event.target.value);
   };
-  
+
   const handleTimeChange = (event) => {
     setTimerange(event.target.value);
   };
@@ -246,7 +279,6 @@ function App() {
                 <option value={"year"}>this year</option>
                 <option value={"all"}>all time</option>
               </TimeRangeSelect>
-              
             </WhiteText>
             {/* <Button onClick={getPosts}>
             Search!
@@ -272,6 +304,9 @@ function App() {
                     thumbnail={post.thumbnail}
                     href={"https://reddit.com" + post.permalink}
                     target="blank"
+                    index = {i}
+                    setSelectedPostIndex={setSelectedPostIndex}
+                    setShowModal={setShowModal}
                   />
                 ))}
               </List>
@@ -282,6 +317,36 @@ function App() {
             <LoadingIndicator />
           )}
         </Container>
+
+        <Modal
+          open={showModal}
+          onClose={closeModal}
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+        >
+          <ModalPostCard>
+            {posts.state === "Loaded" &&
+            selectedPostIndex < posts.data.length &&
+            selectedPostIndex >= 0 ? (
+              <>
+                <ModalCardContent>
+                  <Typography variant="overline">
+                  {formatScore(posts.data[selectedPostIndex].score)}
+                  </Typography>
+                  <Typography variant="h6">{posts.data[selectedPostIndex].title}</Typography>
+                  <Typography variant="subtitle1">
+                    Posted by u/reddituser
+                  </Typography>
+                </ModalCardContent>
+                <ModalCardMediaContent>
+                  <ModalImage src={posts.data[selectedPostIndex].thumbnail} />
+                </ModalCardMediaContent>
+              </>
+            ) : (
+              <CircularProgress />
+            )}
+          </ModalPostCard>
+        </Modal>
       </div>
     </ThemeProvider>
   );
@@ -302,17 +367,17 @@ const PostListItemBody = styled(ListItem)`
     color: ${deepOrange[500]};
   }
 `;
-
-function PostListItem({ href, title, author, score, thumbnail }) {
-  function formatScore(redditScore) {
-    if (redditScore >= 1000000) {
-      return `${(redditScore / 1000000).toFixed(0)}M`;
-    } else if (redditScore >= 1000) {
-      return `${(redditScore / 1000).toFixed(0)}k`;
-    } else {
-      return redditScore;
-    }
+function formatScore(redditScore) {
+  if (redditScore >= 1000000) {
+    return `${(redditScore / 1000000).toFixed(0)}M`;
+  } else if (redditScore >= 1000) {
+    return `${(redditScore / 1000).toFixed(0)}k`;
+  } else {
+    return redditScore;
   }
+}
+function PostListItem({ href, title, author, score, thumbnail, }) {
+
 
   return (
     <>
@@ -323,13 +388,14 @@ function PostListItem({ href, title, author, score, thumbnail }) {
 
         <ListItemText primary={title} secondary={`Posted by u/${author}`} />
 
-        {thumbnail && thumbnail !== 'self' &&
+        {thumbnail &&
+          thumbnail !== "self" &&
           (thumbnail === "nsfw" ? (
-            <ListImageRight
-              src={
-                "https://i3.kym-cdn.com/photos/images/original/000/905/295/193.png"
-              }
-            />
+            <Box paddingY={4}>
+              <Typography color="primary" variant="overline">
+                NSFW
+              </Typography>
+            </Box>
           ) : (
             <ListImageRight src={thumbnail} />
           ))}
