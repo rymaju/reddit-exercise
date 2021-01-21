@@ -7,7 +7,6 @@ import {
   Select,
   List,
   ListItem,
-  Avatar,
   ListItemText,
   Divider,
   ListItemAvatar,
@@ -15,7 +14,7 @@ import {
   Box,
   createMuiTheme, CssBaseline, ThemeProvider, useMediaQuery 
 } from "@material-ui/core";
-import { useState, useMemo  } from "react";
+import { useState  } from "react";
 import { useEffect } from "react";
 import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -84,7 +83,6 @@ function LoadingIndicator() {
         display="flex"
         justifyContent="center"
         width="100%"
-        //color={deepOrange[500]}
       >
         <CircularProgress />
       </Box>
@@ -99,7 +97,6 @@ function App() {
   const query = new URLSearchParams(search);
 
   const [subreddit, setSubreddit] = useState(query.get("r") || "news");
-  const [limit, setLimit] = useState(25);
   const [timerange, setTimerange] = useState(query.get("t") || "all");
   const [hasMore, setHasMore] = useState(false);
   const [afterAnchor, setAfterAnchor] = useState(null);
@@ -122,11 +119,7 @@ function App() {
   const handleSubredditChange = (event) => {
     setSubreddit(event.target.value);
   };
-
-  const handleLimitChange = (event) => {
-    setLimit(event.target.value);
-  };
-
+  
   const handleTimeChange = (event) => {
     setTimerange(event.target.value);
   };
@@ -168,7 +161,6 @@ function App() {
         setAfterAnchor(response.data.after);
       })
       .catch((err) => {
-        //setPosts(response.data);
         console.log(err);
         setPosts({
           state: "Error",
@@ -176,7 +168,6 @@ function App() {
             "An error occurred while loading the data! Please verify the subreddit name and try again!",
         });
       });
-    //console.log(response.json())
   }
 
   function fetchMoreData() {
@@ -218,7 +209,7 @@ function App() {
           <Container maxWidth="md">
             <WhiteText variant="h2">
               The top{" "}
-              {posts.state == "Loaded" ? posts.data.length : fetchBatchSize}{" "}
+              {posts.state === "Loaded" ? posts.data.length : fetchBatchSize}{" "}
               posts from
             </WhiteText>
             <WhiteText variant="h2">
