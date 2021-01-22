@@ -77,9 +77,12 @@ const TimeRangeSelect = styled(Select)`
     color: white; // color of the selected option
     font-weight: 800;
     option {
-      color: initial; // color of all the other options
+      color: black; // color of all the other options
       font-weight: 400;
       font-size: 1rem;
+      @media (prefers-color-scheme: dark) {
+        color: white;
+      }
     }
   }
 `;
