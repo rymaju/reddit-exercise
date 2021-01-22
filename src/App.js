@@ -241,7 +241,7 @@ function App() {
                 id="post-limit"
                 value={subreddit}
                 onChange={handleSubredditChange}
-                //onBlur={getPosts}
+                onBlur={getPosts}
               />
             </WhiteText>
             <WhiteText variant="h2">
