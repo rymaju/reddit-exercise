@@ -1,70 +1,110 @@
-# Getting Started with Create React App
+# 🚀 Reddit Exercise
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This application is a backend API to simplify requests to the Reddit API as well as a front-end interface to view top posts from any subreddit.
 
-## Available Scripts
+## 🛠️ Setup
 
-In the project directory, you can run:
+```sh
+
+git clone https://github.com/rymaju/reddit-exercise.git
+
+cd reddit-exercise
+
+npm install
+
+npm start
+
+```
+
+
 
 ### `npm start`
+To build the frontend and start the backend to host files statically. **Use this command to build and host the project locally.**
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### `npm run react`
+To build and start only the frontend. Only for development purposes.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### `npm run server` 
+To run only the backend using `nodemon` to watch for changes. Only for development purposes.
 
-### `npm test`
+## Project Overview
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Frontend
 
-### `npm run build`
+I created a Reddit interface that allows users to enter any subreddit and fetch the top posts from a set of valid timeranges. I also implemented infinite scroll, allowing users to continue to scroll down for more posts. The posts are sorted by top posts (highest overall scores). The site was designed mobile-first with Material UI components, and also includes a light/dark theme.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+For the frontend I used React.js with Material UI and styled-components. I first sketched out the site on Figma (see designs here), then implemented the designs using React components. I used axios to make API requests and the ReactInfiniteScroll component to implement infinite scrolling.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+There are a lot of improvements I can make to the site. I could have used a React fetching/caching library such as react-query or swr to cache API requests so that subsequent load times to the same subreddit would be faster. I could have also implemented a search feature. From a technology standpoint the application might scale better if I had used Typescript instead of plain Javascript for my React components.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Backend
 
-### `npm run eject`
+I created a very simple REST API (only one endpoint). The goal of this API is to serve as a simpler interface for the actual Reddit API. The goal of this API is to provide information about top posts of any given subreddit with additional restrictions.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+The backend was created with Node and Express. Usual express middleware was included for security although some were disabled for simplicity (CORS, CSP).
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## API Documentation
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### `GET /api/posts/:subreddit?limit=<limit>&timerange=<timerange>&after=<after>`
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Gets the top posts of r/`subreddit`.
 
-## Learn More
+Optional params allows more specific searches.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- `limit` determines the number of posts to return.
+- `timerange` determines the period of time in which top posts are filtered (top posts of **today**, this **month**, **all** time, etc.)
+- `after` will ignore posts ordered before it. Useful for pagination or fetching more data. For example if a reddit had 10 top posts: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]. { after=5, limit=5 } will yield [5, 6, 7, 8, 9, 10]. (Note that numbers are used instead of proper reddit fullnames for brevity).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+| Param     | Required? | Default Value | Type    | Requirements                                                    |
+|-----------|-----------|---------------|---------|-----------------------------------------------------------------|
+| subreddit | Required  | N/A           | String  | Must be a valid subreddit name ("news", "anime", "pics" etc.)   |
+| limit     | Optional  | 20            | Integer | Must be in the range [1, 100]                                   |
+| timerange | Optional  | "all"         | String  | Must be one of ["hour", "today", "now", "week", "month", "all"] |
+| after     | Optional  | N/A           | String  | Must be a valid fullname of a reddit post ("t3_l289v9")         |
 
-### Code Splitting
+#### Response Schema
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```json
+{
+  "data": [
+    {
+      "title": STRING,
+      "score": INTEGER,
+      "created": INTEGER,
+      "author": STRING,
+      "permalink": STRING,
+      "thumbnail": STRING | NULL
+    },
+    ...
+  ],
+  "after": STRING
+}
+```
 
-### Analyzing the Bundle Size
+#### Example usage
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+`GET /api/posts/aww?timerange=now&limit=2`
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```json
+{
+  "data": [
+    {
+      "title": "Retired Nasa Astronaut, Leland Melvin’s official portrait",
+      "score": 91487,
+      "created": 1611555611,
+      "author": "Greenthund3r",
+      "permalink": "/r/aww/comments/l495gr/retired_nasa_astronaut_leland_melvins_official/",
+      "thumbnail": "https://b.thumbs.redditmedia.com/ai-0-UXDUSfMx3vygJLRSyh29RaHhzjEpT8SpJoPCvA.jpg"
+    },
+    {
+      "title": "Baby kitty learning to trust its human 🥰",
+      "score": 72478,
+      "created": 1611600814,
+      "author": "natbrat69",
+      "permalink": "/r/aww/comments/l4llcv/baby_kitty_learning_to_trust_its_human/",
+      "thumbnail": "https://a.thumbs.redditmedia.com/h2ogGFVxG7V0roO3_aFXu8TcFIZUTGayedQx6i9Qdz4.jpg"
+    }
+  ],
+  "after": "t3_l4llcv"
+}
+```

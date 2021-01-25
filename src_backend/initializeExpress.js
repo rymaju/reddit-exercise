@@ -12,16 +12,16 @@ function init () {
   const app = express()
 
   const apiLimiter = rateLimit({
-    windowMs: 1000 , 
+    windowMs: 1000,
     max: 60 // limit each IP to 60 requests a second
   })
 
   app.use(cors()) // Here we enable cors
-  
+
   // helmet is a medley of security middleware to better protect our app
   app.use(
     helmet({
-      contentSecurityPolicy: false,
+      contentSecurityPolicy: false
     })
   )
 
