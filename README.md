@@ -45,7 +45,9 @@ The backend was created with Node and Express. Usual express middleware was incl
 
 ## 📜 API Documentation
 
-### `GET /api/posts/:subreddit?limit=<limit>&timerange=<timerange>&after=<after>`
+### `GET /api/posts/:subreddit`
+
+`GET /api/posts/:subreddit?limit=<limit>&timerange=<timerange>&after=<after>`
 
 Gets the top posts of r/`subreddit`.
 
