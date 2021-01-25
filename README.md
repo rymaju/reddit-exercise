@@ -43,7 +43,7 @@ I created a very simple REST API (only one endpoint). The goal of this API is to
 
 The backend was created with Node and Express. Usual express middleware was included for security although some were disabled for simplicity (CORS, CSP).
 
-## API Documentation
+## 📜 API Documentation
 
 ### `GET /api/posts/:subreddit?limit=<limit>&timerange=<timerange>&after=<after>`
 
