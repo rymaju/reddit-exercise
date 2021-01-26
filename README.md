@@ -40,7 +40,7 @@ There are a lot of improvements I can make to the site. I could have used a Reac
 
 ### Backend
 
-I created a very simple REST API (only one endpoint). The goal of this API is to serve as a simpler interface for the actual Reddit API. The goal of this API is to provide information about top posts of any given subreddit with additional restrictions.
+I created a very simple REST API (only one endpoint). The goal of this API is to serve as a simpler interface for the actual Reddit API for the purpose of providing information about top posts of a subreddit.
 
 The backend was created with Node and Express. Usual express middleware was included for security although some were disabled for simplicity (CORS, CSP).
 
