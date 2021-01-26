@@ -63,7 +63,8 @@ function App () {
   const handleTimeChange = (event) => {
     setTimerange(event.target.value)
   }
-  useEffect(getPosts, [timerange])
+  // eslint-disable-next-line
+  useEffect(getPosts, [timerange]) // eslint-disable-line no-eval
 
   function getPosts () {
     if (!subreddit.match(/^([A-Za-z]|[0-9]|-|_)+$/)) {
@@ -128,6 +129,7 @@ function App () {
 
   useEffect(() => {
     getPosts()
+  // eslint-disable-next-line
   }, [])
 
   return (
