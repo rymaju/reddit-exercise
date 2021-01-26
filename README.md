@@ -34,7 +34,7 @@ To run only the backend using `nodemon` to watch for changes. Only for developme
 
 I created a Reddit interface that allows users to enter any subreddit and fetch the top posts from a set of valid timeranges. I also implemented infinite scroll, allowing users to continue to scroll down for more posts. The posts are sorted by top posts (highest overall scores). The site was designed mobile-first with Material UI components, and also includes a light/dark theme.
 
-For the frontend I used React.js with Material UI and styled-components. I first sketched out the site on Figma (see designs here), then implemented the designs using React components. I used axios to make API requests and the ReactInfiniteScroll component to implement infinite scrolling.
+For the frontend I used React.js with Material UI and styled-components. I first sketched out the site on Figma [(see designs here)](https://www.figma.com/file/pmZM7R8AJZW4vxhComzxKA/Reddit-Stack-Sketches-and-Ideas?node-id=2%3A5814), then implemented the designs using React components. I used axios to make API requests and the ReactInfiniteScroll component to implement infinite scrolling.
 
 There are a lot of improvements I can make to the site. I could have used a React fetching/caching library such as react-query or swr to cache API requests so that subsequent load times to the same subreddit would be faster. I could have also implemented a search feature. From a technology standpoint the application might scale better if I had used Typescript instead of plain Javascript for my React components.
 
