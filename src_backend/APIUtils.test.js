@@ -57,8 +57,11 @@ test('validateParams throws on invalid after fullname', () => {
   expect(() => validateParams('subreddit', 20, 'all', 'g3_s213')).toThrow()
 })
 
-test('fetchTopPosts works on nice parameters', async () => {
+test('fetchTopPosts works on nice parameters 1', async () => {
   expect((await fetchTopPosts('news', 3, 'all', null)).data.children).toHaveLength(3)
+})
+
+test('fetchTopPosts works on nice parameters 2', async () => {
   expect((await fetchTopPosts('pics', 5, 'all', null)).data.children).toHaveLength(5)
 })
 
