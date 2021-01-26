@@ -1,51 +1,5 @@
 const router = require('express').Router()
-const fetch = require('node-fetch')
-
-const VALID_TIMERANGE = ['hour', 'today', 'now', 'month', 'week', 'all']
-
-function validateParams (subreddit, amount, timerange, after) {
-  if (!subreddit.match(/^([A-Za-z]|[0-9]|-|_)+$/)) {
-    throw new Error('Invalid subreddit name')
-  }
-
-  if (amount < 1 || amount > 100) {
-    throw new Error('Invalid limit. Must be an integer in the range [1,100]')
-  }
-
-  if (!VALID_TIMERANGE.includes(timerange)) {
-    throw new Error(`Invalid timerange. Must be an one of ${VALID_TIMERANGE}`)
-  }
-
-  if (after != null && !after.match(/^t[0-9]_([A-Za-z]|[0-9])+$/)) {
-    throw new Error('Invalid after, must be a valid reddit article fullname')
-  }
-}
-
-async function fetchTopPosts (subreddit, amount, timerange, after) {
-  const URL = `https://www.reddit.com/r/${subreddit}/top/.json?t=${timerange}&limit=${amount}&after=${after}`
-
-  const response = await fetch(URL)
-
-  if (response.ok) {
-    return response.json()
-  } else {
-    throw new Error('Bad response when fetching data from Reddit API.')
-  }
-}
-
-function sanitizePostData (post) {
-  const postData = post.data
-  const res = {
-    title: postData.title,
-    score: postData.score,
-    created: postData.created,
-    author: postData.author,
-    permalink: postData.permalink,
-    thumbnail: postData.thumbnail || null
-  }
-
-  return res
-}
+const { validateParams, fetchTopPosts, sanitizePostData } = require('./APIUtils')
 
 router.route('/:subreddit').get(async (req, res) => {
   const subreddit = req.params.subreddit

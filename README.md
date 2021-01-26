@@ -16,10 +16,11 @@ npm start
 
 ```
 
-
-
 ### `npm start`
 To build the frontend and start the backend to host files statically. **Use this command to build and host the project locally.**
+
+### `npm run test`
+To run JEST unit tests.
 
 ### `npm run react`
 To build and start only the frontend. Only for development purposes.
@@ -42,6 +43,8 @@ There are a lot of improvements I can make to the site. I could have used a Reac
 I created a very simple REST API (only one endpoint). The goal of this API is to serve as a simpler interface for the actual Reddit API. The goal of this API is to provide information about top posts of any given subreddit with additional restrictions.
 
 The backend was created with Node and Express. Usual express middleware was included for security although some were disabled for simplicity (CORS, CSP).
+
+Robust JEST unit tests were created to verify post utility functions work correctly.
 
 ## 📜 API Documentation
 
@@ -85,7 +88,10 @@ Optional params allows more specific searches.
 
 #### Example usage
 
+Request:
 `GET /api/posts/aww?timerange=now&limit=2`
+
+Response:
 
 ```json
 {
