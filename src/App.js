@@ -67,7 +67,7 @@ function App () {
   useEffect(getPosts, [timerange]) // eslint-disable-line no-eval
 
   function getPosts () {
-    if (!subreddit.match(/^([A-Za-z]|[0-9]|-|_)+$/)) {
+    if (!subreddit.match(/^[A-Za-z]([A-Za-z]|[0-9]|-|_)*$/)) {
       setPosts({
         state: 'Error',
         msg: 'Please enter a valid subreddit name.'
