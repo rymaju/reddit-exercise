@@ -3,7 +3,6 @@ const cors = require('cors')
 const helmet = require('helmet')
 const rateLimit = require('express-rate-limit')
 const postsRouter = require('./postsRouter')
-const path = require('path')
 /**
  * Initalizes the express app
  * @returns the express app

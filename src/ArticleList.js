@@ -78,22 +78,24 @@ function PostListItem ({ href, title, author, score, thumbnail }) {
         <ListItemText primary={title} secondary={`Posted by u/${author}`} />
         {thumbnail &&
           thumbnail !== 'self' &&
-          (thumbnail === 'nsfw' ? (
-            <TextPlaceholder>
-              <Typography color='primary' variant='overline'>
-                NSFW
-              </Typography>
-            </TextPlaceholder>
-          )
-            : (thumbnail === 'spoiler' ? (
+          (thumbnail === 'nsfw'
+            ? (
               <TextPlaceholder>
                 <Typography color='primary' variant='overline'>
-                  SPOILER
+                  NSFW
                 </Typography>
               </TextPlaceholder>
-              ) : thumbnail.startsWith('http') && (
-                <ListImageRight src={thumbnail} />
-              )))}
+              )
+            : (thumbnail === 'spoiler'
+                ? (
+                  <TextPlaceholder>
+                    <Typography color='primary' variant='overline'>
+                      SPOILER
+                    </Typography>
+                  </TextPlaceholder>
+                  ) : thumbnail.startsWith('http') && (
+                    <ListImageRight src={thumbnail} />
+                  )))}
       </PostListItemBody>
       <Divider variant='inset' component='li' />
     </>
@@ -110,34 +112,36 @@ function LoadingIndicator () {
 function ArticleList ({ posts, fetchMoreData, hasMore }) {
   return (
     <Container maxWidth='md'>
-      {posts.state === 'Loaded' ? (
-        <InfiniteScroll
-          dataLength={posts.data.length}
-          next={fetchMoreData}
-          hasMore={hasMore}
-          loader={<LoadingIndicator />}
-        >
-          <List>
-            {posts.data.map((post, i) => (
-              <PostListItem
-                key={i}
-                title={post.title}
-                author={post.author}
-                score={post.score}
-                thumbnail={post.thumbnail}
-                href={'https://reddit.com' + post.permalink}
-                target='blank'
-              />
-            ))}
-          </List>
-        </InfiniteScroll>
-      ) : posts.state === 'Error' ? (
-        <ErrorContainer>
-          <ErrorIcon fontSize='large' /> <Typography variant='body1'>{posts.msg}</Typography>
-        </ErrorContainer>
-      ) : (
-        <LoadingIndicator />
-      )}
+      {posts.state === 'Loaded'
+        ? (
+          <InfiniteScroll
+            dataLength={posts.data.length}
+            next={fetchMoreData}
+            hasMore={hasMore}
+            loader={<LoadingIndicator />}
+          >
+            <List>
+              {posts.data.map((post, i) => (
+                <PostListItem
+                  key={i}
+                  title={post.title}
+                  author={post.author}
+                  score={post.score}
+                  thumbnail={post.thumbnail}
+                  href={'https://reddit.com' + post.permalink}
+                  target='blank'
+                />
+              ))}
+            </List>
+          </InfiniteScroll>
+          ) : posts.state === 'Error'
+            ? (
+              <ErrorContainer>
+                <ErrorIcon fontSize='large' /> <Typography variant='body1'>{posts.msg}</Typography>
+              </ErrorContainer>
+              ) : (
+                <LoadingIndicator />
+              )}
     </Container>
   )
 }

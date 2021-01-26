@@ -25,7 +25,7 @@ async function fetchTopPosts (subreddit, amount, timerange, after) {
   try {
     const response = await axios.get(URL)
     return response.data
-  } catch(e) {
+  } catch (e) {
     throw new Error('Bad response when fetching data from Reddit API.')
   }
 }
